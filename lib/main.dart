@@ -87,8 +87,8 @@ class _HomePageState extends State<HomePage> {
             pTable = snapshot.data;
             return Center(
                 child: activeTab == "Nomenclatura"
-                    ? Nomenclatura(pTable)
-                    : CalacoloMoli(pTable));
+                    ? Nomenclatura()
+                    : CalacoloMoli());
           } else {
             return Center(child: CircularProgressIndicator());
           }

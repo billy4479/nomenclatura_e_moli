@@ -1,19 +1,20 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:nomenclatura_e_moli/models/element.dart';
 import 'package:nomenclatura_e_moli/models/element_n.dart';
 
 part 'compound.g.dart';
 
 @JsonSerializable()
 class Compound {
-  List<ElementN> first;
+  List<ElementN> main;
   Compound parentheses;
   int parenthesesN;
   final bool canHaveParentheses;
 
-  Compound(this.first, this.parentheses, {this.canHaveParentheses = true});
+  Compound(this.main, this.parentheses, {this.canHaveParentheses = true});
 
   Compound.parse(String raw, {this.canHaveParentheses = true}) {
-    first = List<ElementN>();
+    main = List<ElementN>();
 
     List<String> data = List<String>();
     raw.runes.forEach((c) {
@@ -69,7 +70,7 @@ class Compound {
       } else if (data[i].toUpperCase() == data[i]) {
         // Is uppercase
         if (tmpSym != "") {
-          first.add(ElementN.fromString(
+          main.add(ElementN.fromString(
               tmpSym, (tmpN != "null") ? int.parse(tmpN) : 1));
         }
         tmpSym = data[i];
@@ -80,9 +81,17 @@ class Compound {
       }
     }
     if (tmpSym != "") {
-      first.add(
+      main.add(
           ElementN.fromString(tmpSym, (tmpN != "null") ? int.parse(tmpN) : 1));
     }
+  }
+
+  bool contains(Element e) {
+    for (var item in main) {
+      if (item.element == e) return true;
+    }
+    if (parentheses != null) return parentheses.contains(e);
+    return false;
   }
 
   factory Compound.fromJson(Map<String, dynamic> json) =>

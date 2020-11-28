@@ -8,7 +8,7 @@ part of 'compound.dart';
 
 Compound _$CompoundFromJson(Map<String, dynamic> json) {
   return Compound(
-    (json['first'] as List)
+    (json['main'] as List)
         ?.map((e) =>
             e == null ? null : ElementN.fromJson(e as Map<String, dynamic>))
         ?.toList(),
@@ -20,7 +20,7 @@ Compound _$CompoundFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$CompoundToJson(Compound instance) => <String, dynamic>{
-      'first': instance.first,
+      'main': instance.main,
       'parentheses': instance.parentheses,
       'parenthesesN': instance.parenthesesN,
       'canHaveParentheses': instance.canHaveParentheses,
