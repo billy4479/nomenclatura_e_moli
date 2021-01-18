@@ -23,6 +23,14 @@ class PeriodicTable {
     return _instance;
   }
 
+  Element search(String symbol) {
+    Element result;
+    elements.forEach((element) {
+      if (element.symbol == symbol) result = element;
+    });
+    return result;
+  }
+
   PeriodicTable(this.elements) {
     elements.sort((a, b) => a.atomicNumber.compareTo(b.atomicNumber));
   }

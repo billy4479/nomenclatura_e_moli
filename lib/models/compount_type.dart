@@ -1,0 +1,15 @@
+enum CompoundType {
+  SaleBinnario,
+  OssidoAcido,
+  OssidoBasico,
+  Idracido,
+  IdruroCovalente,
+  IdruroMetallico,
+  Idrossido,
+  Ossiacido,
+  SaleTernario,
+  Ossoanione,
+  ElementoSingolo,
+  Error,
+  Special,
+}

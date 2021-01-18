@@ -1,6 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:nomenclatura_e_moli/models/compount_type.dart';
 import 'package:nomenclatura_e_moli/models/element.dart';
 import 'package:nomenclatura_e_moli/models/element_n.dart';
+import 'package:nomenclatura_e_moli/models/periodic_table.dart';
 
 part 'compound.g.dart';
 
@@ -10,8 +12,32 @@ class Compound {
   Compound parentheses;
   int parenthesesN;
   final bool canHaveParentheses;
+  CompoundType compoundType;
+  int _totalLenth;
 
-  Compound(this.main, this.parentheses, {this.canHaveParentheses = true});
+  static final Compound acqua = Compound(
+    <ElementN>[
+      ElementN(Element.Idrogeno, 2),
+      ElementN(Element.Ossigeno, 1),
+    ],
+    null,
+    CompoundType.Special,
+    canHaveParentheses: false,
+  );
+
+  Compound(this.main, this.parentheses, this.compoundType,
+      {this.canHaveParentheses = true}) {
+    _totalLenth = (parentheses != null)
+        ? main.length + parentheses._totalLenth
+        : main.length;
+  }
+
+  bool has(Element e) {
+    for (var element in main) {
+      if (element.element.symbol == e.symbol) return true;
+    }
+    return false;
+  }
 
   Compound.parse(String raw, {this.canHaveParentheses = true}) {
     main = List<ElementN>();
@@ -83,6 +109,56 @@ class Compound {
     if (tmpSym != "") {
       main.add(
           ElementN.fromString(tmpSym, (tmpN != "null") ? int.parse(tmpN) : 1));
+    }
+
+    _totalLenth = (parentheses != null)
+        ? main.length + parentheses._totalLenth
+        : main.length;
+    _getCompoundType();
+  }
+
+  void _getCompoundType() {
+    final pTable = PeriodicTable.get();
+    if (_totalLenth == 1) {
+      if (parentheses == null) {
+        compoundType = CompoundType.ElementoSingolo;
+        return;
+      }
+      compoundType = CompoundType.Error;
+      return;
+    } else if (_totalLenth == 2) {
+      if (has(pTable.search("H"))) {
+        if (main.any((element) => element.element.type == Type.Metall)) {
+          compoundType = CompoundType.IdruroMetallico;
+        } else if (has(pTable.search("S")) ||
+            has(pTable.search("F")) ||
+            has(pTable.search("Br")) ||
+            has(pTable.search("Cl")) ||
+            has(pTable.search("I"))) {
+          compoundType = CompoundType.Idracido;
+        } else {
+          compoundType = CompoundType.IdruroCovalente;
+        }
+        return;
+      } else if (main.contains(pTable.search("O"))) {
+        if (main.any((element) => element.element.type == Type.Metall)) {
+          compoundType = CompoundType.OssidoBasico;
+        } else {
+          compoundType = CompoundType.OssidoAcido;
+        }
+        return;
+      } else
+        compoundType = CompoundType.SaleBinnario;
+    } else if (_totalLenth == 3) {
+      if (has(pTable.search("O")) && has(pTable.search("H"))) {
+        // Ossoacido
+        // Idrossido
+      } else {
+        // Sale ternario
+      }
+    } else {
+      compoundType = CompoundType.Error;
+      // O cose strane speciali
     }
   }
 

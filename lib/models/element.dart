@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:nomenclatura_e_moli/models/periodic_table.dart';
 
 part 'element.g.dart';
 
@@ -9,6 +10,9 @@ class Element {
   final int atomicNumber;
   final double atomicWeight;
   final Type type;
+
+  static final Idrogeno = PeriodicTable.get().search("H");
+  static final Ossigeno = PeriodicTable.get().search("O");
 
   Element(
       this.symbol, this.name, this.atomicNumber, this.atomicWeight, this.type);
